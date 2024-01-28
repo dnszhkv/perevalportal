@@ -18,12 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from pereval.views import *
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 router = routers.DefaultRouter()
-router.register(r'pereval', PerevalViewSet, basename='pereval')
+router.register(r'submitData', PerevalViewSet, basename='submitData')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('submitData/', include(router.urls)),
-    path('submitData/email/', EmailAPIView.as_view()),
+    path('', include(router.urls)),
+    path('email/', EmailAPIView.as_view()),
+
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
 ]

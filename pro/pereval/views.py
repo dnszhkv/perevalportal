@@ -1,16 +1,17 @@
-from rest_framework import viewsets, status
-from rest_framework import generics
+from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .serializers import *
 import django_filters
 
 
+# Базовый класс для ViewSet'ов
 class BaseViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return self.model.objects.all()
 
 
+# ViewSet для модели Users
 class UsersViewset(BaseViewSet):
     serializer_class = UsersSerializer
     model = Users
@@ -18,6 +19,7 @@ class UsersViewset(BaseViewSet):
     filterset_fields = ['fam', 'name', 'otc', 'email']
 
     def create(self, request, *args, **kwargs):
+        # Создание объекта пользователя
         serializer = UsersSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -28,7 +30,7 @@ class UsersViewset(BaseViewSet):
                     'id': serializer.data['email'],
                 }
             )
-
+        # Обработка ошибок валидации и внутренней ошибки сервера
         if status.HTTP_400_BAD_REQUEST:
             return Response(
                 {
@@ -37,7 +39,6 @@ class UsersViewset(BaseViewSet):
                     'id': None,
                 }
             )
-
         if status.HTTP_500_INTERNAL_SERVER_ERROR:
             return Response(
                 {
@@ -48,13 +49,14 @@ class UsersViewset(BaseViewSet):
             )
 
 
+# ViewSet для модели PerevalAdded
 class PerevalViewSet(BaseViewSet):
     serializer_class = PerevalAddedSerializer
     model = PerevalAdded
 
     def create(self, request, *args, **kwargs):
+        # Создание объекта PerevalAdded
         serializer = PerevalAddedSerializer(data=request.data)
-        """Результаты метода: JSON"""
         if serializer.is_valid():
             serializer.save()
             return Response({
@@ -62,6 +64,7 @@ class PerevalViewSet(BaseViewSet):
                 'message': None,
                 'id': serializer.data['id'],
             })
+        # Обработка ошибок валидации и внутренней ошибки сервера
         if status.HTTP_400_BAD_REQUEST:
             return Response({
                 'status': status.HTTP_400_BAD_REQUEST,
@@ -76,6 +79,7 @@ class PerevalViewSet(BaseViewSet):
             })
 
     def partial_update(self, request, *args, **kwargs):
+        # Частичное обновление объекта PerevalAdded
         perevals = self.get_object()
         if perevals.status == 'new':
             serializer = PerevalAddedSerializer(perevals, data=request.data, partial=True)
@@ -98,6 +102,7 @@ class PerevalViewSet(BaseViewSet):
             })
 
 
+# APIView для получения списка объектов PerevalAdded, которые добавил пользователь с email
 class EmailAPIView(generics.ListAPIView):
     serializer_class = PerevalAddedSerializer
 
