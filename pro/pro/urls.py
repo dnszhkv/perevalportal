@@ -26,7 +26,7 @@ router.register(r'submitData', PerevalViewSet, basename='submitData')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('api/submitData/', EmailAPIView.as_view()),
+    path('api/submitData/', EmailAPIView.as_view(), name='email-api-list'),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
