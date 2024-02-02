@@ -80,23 +80,11 @@ WSGI_APPLICATION = 'pro.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Получаю данные для подключения к базе данных из переменных окружения
-dbname = config('FSTR_DB_NAME')
-user = config('FSTR_DB_USER')
-password = config('FSTR_DB_PASS')
-host = config('FSTR_DB_HOST')
-port = config('FSTR_DB_PORT')
-
-# Задаю параметры для работы с Postgres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': dbname,
-        'USER': user,
-        'PASSWORD': password,
-        'HOST': host,
-        'PORT': port,
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
